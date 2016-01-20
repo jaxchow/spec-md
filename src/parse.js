@@ -35,7 +35,7 @@ function importAST(parser, filepath) {
     }
     var importASTs = [];
     visit(ast, function (node) {
-      if (node.type === 'Import') {
+      if (node.type === 'Import' || node.type === 'Include') {
         var subfilepath = path.resolve(path.dirname(filepath), node.path);
         importASTs.push(importAST(parser, subfilepath));
       }
@@ -50,7 +50,7 @@ function importAST(parser, filepath) {
             node.contents = node.contents.reduce(flattener, []);
             needToFlatten = needToFlattenStack.pop();
           }
-          if (node.type === 'Import') {
+          if (node.type === 'Import' || node.type === 'Include') {
             var pathToFlatten = keyPath.slice(0, -1).join('.');
             if (pathToFlatten !== needToFlatten) {
               needToFlattenStack.push(needToFlatten);

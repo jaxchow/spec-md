@@ -156,7 +156,7 @@ paragraph = BLOCK !'#' contents:content+ {
 }
 
 escaped  = '\\' [\\`*_{}[\]()#+\-.!<>|]
-inlineEntity = inlineEdit / inlineCode / reference / bold / italic / link / image / htmlTag
+inlineEntity = inlineEdit / inlineCode / reference / bold / italic / link / image / include / htmlTag
 
 content = inlineEntity / text
 
@@ -300,6 +300,13 @@ image = '![' alt:$[^\]\n\r]+ '](' _ url:$[^)\n\r]+ _ ')' {
   };
 }
 
+include = '@[' contents:linkContent* '](' _ url:$[^)\n\r]+ _ ')' {
+  return {
+    type: 'Include',
+    contents: contents,
+    path: url
+  };
+}
 
 // List
 

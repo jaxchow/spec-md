@@ -319,7 +319,11 @@ function printAll(list, options) {
           );
 
         case 'InlineCode':
-          return '<code>' + escapeCode(node.code) + '</code>';
+          if(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(node.code))
+            return '<code style="background-color:'+node.code+'">' + escapeCode(node.code) + '</code>';
+          else {
+            return '<code>' + escapeCode(node.code) + '</code>';
+          }
 
         case 'Link':
           return '<a href="' + encodeURI(node.url) + '">' + join(node.contents) + '</a>';
