@@ -526,7 +526,7 @@ function link(node, id, options) {
 }
 
 function anchorize(title) {
-  return title.replace(/[^A-Za-z0-9\-_]+/g, '-');
+  return title.replace(/[^A-Za-z0-9\-_[\u4e00-\u9fa5]]+/g, '-');
 }
 
 var ESCAPE_CODE_REGEX = /[><"'&]/g;
