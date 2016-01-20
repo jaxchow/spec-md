@@ -16,14 +16,21 @@ function parse(filepath) {
 function readFile(filepath) {
   return new Promise(function (resolve, reject) {
     fs.readFile(filepath, { encoding: 'utf8' }, function (err, result) {
+
       return err ? reject(err) : resolve(result);
     });
   });
 }
 
-function importAST(parser, filepath) {
+function importAST(parser, filepath,node) {
   return readFile(filepath).then(function (source) {
     try {
+      var exname=/\.[^\.]+$/.exec(filepath)
+      if(exname[0]!=='.md'){
+        if( node.contents[0].value !='example'){
+          source='\n\r```'+exname[0].replace(".","!")+'\n\r'+source+'\n\r```\n\r'
+        }
+      }
       var ast = parser.parse(source);
     } catch (error) {
       error.message =
@@ -37,7 +44,7 @@ function importAST(parser, filepath) {
     visit(ast, function (node) {
       if (node.type === 'Import' || node.type === 'Include') {
         var subfilepath = path.resolve(path.dirname(filepath), node.path);
-        importASTs.push(importAST(parser, subfilepath));
+        importASTs.push(importAST(parser, subfilepath,node));
       }
     });
     return Promise.all(importASTs).then(function (asts) {
